@@ -1,3 +1,12 @@
+## key的通用操作
+* del key1 [key2 ...]：删除指定的key
+* exists key：判断key是否存在，1为存在，0为不存在
+* rename key newkey：重命名key
+* expire key second：设置过期时间，单位为秒
+* ttk key：获取该key剩余的超时时间，如果没有设置超时返回-1
+* persist key：持久化key
+
+
 ## 存储字符串
 * **set key value**：向redis中**存储键值对**，如果key存在，就覆盖原来的值。总是返回OK。
 * **get key**：**获取key的值，只能用来获取String类型的value**，如果不存在，返回null。如果key对应的value不是String类型，redis将返回错误信息。
@@ -35,3 +44,16 @@ hash时一个string类型的field和value的映射表。
 * hgetall key：获取key中所有的键值对
 * hdel key field1 [field2 ...]：删除一个或多个字段，返回删除的个数
 * hlen key：获取key中包含的filed的数量
+
+## 存储sorted set
+sorted set有序集合和集合一样，也是string类型元素的集合，且不允许重复。
+不同的是每个元素都会关联一个double类型的分数，redis正是通过分数来为集合中的成员进行从小到大的排序。有序集合的分数是唯一的，但是分数却可以重复。
+* zadd key score member [score2 member2 ...]：将成员及分数添加到sorted set中，如果该元素已经存在则会用新的元素替换原有的分数。返回添加的元素个数，不包括更新的元素。
+* zscore key member：返回该元素的分数
+* zcard key：返回集合中成员的数量
+* zrem key member [menber2 ...]：删除集合中的成员，返回删除元素的个数
+* zrange key start end [withscores]：获取集合中索引从start到end的元素，withscores表示返回的成员包含其分数。
+* zremrangebyrank key start end：按照索引删除范围内的元素
+* zremrangescore key min max：按照分数范围删除元素
+* zcount key member：获取分数在min到max范围之间的元素个数
+* zrank/zrevrank key member：返回成员在集合中的排名（从小到大/从大到小）
