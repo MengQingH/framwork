@@ -251,7 +251,7 @@ key：student1
   "sex": "man"
 }
 ```
-* **GenericJackson2JsonRedisSerializer**：和Jackson2JsonRedisSerializer基本相同，但是**不需要在序列化时提供对象的类型信息**，更加通用。但是会在序列化信息中添加类的class信息，所以无法反序列化不同路径的对象。
+* **GenericJackson2JsonRedisSerializer**：和Jackson2JsonRedisSerializer基本相同，但是**不需要在序列化时提供对象的类型信息**，更加通用。但是会在序列化信息中添加类的class信息，所以无法反序列化不同路径的对象。**推荐使用**
 ```java
 //构造方法如下，所以初始化时不需要向Jackson2JsonRedisSerializer那样传入对象的类型信息
 public GenericJackson2JsonRedisSerializer(){...}

@@ -1,1 +1,3 @@
 @Primary：当有多个cacheManager的时候，使用该注解在一个管理器上，表示是默认的管理器
+
+@PostContruct：spring框架的注解，在方法上加该注解会在项目启动的时候执行该方法，也可以理解为在spring容器初始化的时候执行该方法。
