@@ -1,0 +1,1 @@
+mybatis-generator(MBG)，mybatis中的一个插件，使用该插件可以很方便的生成实体类、Mapper接口以及对应的xml文件，
