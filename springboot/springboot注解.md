@@ -16,13 +16,14 @@ spring框架的注解，在方法上加该注解会在项目启动的时候执�
     </dependency>
     ```
 常用的注解：
-* @Data ： 注在类上，提供类的get、set、equals、hashCode、canEqual、toString方法
-* @AllArgsConstructor ： 注在类上，提供类的全参构造
-* @NoArgsConstructor ： 注在类上，提供类的无参构造
-* @Setter ： 注在属性上，提供 set 方法
-* @Getter ： 注在属性上，提供 get 方法
-* @EqualsAndHashCode ： 注在类上，提供对应的 equals 和 hashCode 方法
-* @Log4j/@Slf4j ： 注在类上，提供对应的 Logger 对象，变量名为 log
+* @Data：注在类上，提供类的get、set、equals、hashCode、canEqual、toString方法
+* @AllArgsConstructor：注在类上，提供类的全参构造
+* @RequiredArgsConstructor：会生成一个包含常量和标识NotNull的变量的构造方法。生成的构造方法是private，如何想要对外提供使用可以使用staticName属性生成一个static方法。
+* @NoArgsConstructor：注在类上，提供类的无参构造
+* @Setter：注在属性上，提供 set 方法
+* @Getter：注在属性上，提供 get 方法
+* @EqualsAndHashCode：注在类上，提供对应的 equals 和 hashCode 方法
+* @Log4j/@Slf4j：注在类上，提供对应的 Logger 对象，变量名为 log
 
 ## @Accessors注解
 用来配置lombok如何getters和setters方法的格式，可以添加前缀，改变方法的格式。有以下三个属性：
