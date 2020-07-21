@@ -1,4 +1,8 @@
+Redis 是目前业界使用最广泛的内存数据存储。相比 Memcached，Redis 支持更丰富的数据结构，例如 hashes, lists, sets 等，同时支持数据持久化。除此之外，Redis 还提供一些类数据库的特性，比如事务，HA，主从库。
+
+## 使用
 1. 导入依赖包：
+Spring Boot 提供了对 Redis 集成的组件包：spring-boot-starter-data-redis，spring-boot-starter-data-redis依赖于spring-data-redis 和 lettuce 。Spring Boot 1.0 默认使用的是 Jedis 客户端，2.0 替换成 Lettuce。
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -9,6 +13,7 @@
     <artifactId>commons-pool2</artifactId>
 </dependency>
 ```
+
 2. application.yml中添加redis的配置
 ```yml
 # properties文件

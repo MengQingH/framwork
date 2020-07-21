@@ -1,8 +1,46 @@
 ## @Primary
 当有多个cacheManager的时候，使用该注解在一个管理器上，表示是默认的管理器
 
+## @RestController
+controller类的注解，表示Controller里面的方法都以json格式输出
+
 ## @PostContruct
 spring框架的注解，在方法上加该注解会在项目启动的时候执行该方法，也可以理解为在spring容器初始化的时候执行该方法。
+
+## @Value
+设置在方法的属性上，表示把application.property文件中的值设置给该属性。@Value("${com.mqh.name}")
+
+## @Bean注解
+用于方法上，表示**产生一个对象，并把这个java对象交给Spring管理**，产生这个java对象的方法Spring只会调用一次，随后Spring会把这个对象放在自己的IOC容器中。Spring中对bean的处理默认是单例的，实例化的过程只有一次，即多次获取的bean对象都是同一个bean对象。
+SpringIOC 容器管理一个或者多个bean，这些bean都需要在@Configuration注解下进行创建
+```java
+public class MyBean {
+    public MyBean(){
+        System.out.println("MyBean Initializing");
+    }
+    public void init(){
+        System.out.println("Bean 初始化方法被调用");
+    }
+    public void destroy(){
+        System.out.println("Bean 销毁方法被调用");
+    }
+}
+
+@Configuration
+public class AppConfig {
+    // 使用@Bean 注解表明myBean需要交给Spring进行管理
+    // 未指定bean 的名称，默认采用的是 "方法名" + "首字母小写"的配置方式
+    @Bean(initMethod = "init", destroyMethod = "destroy")
+    public MyBean myBean(){
+        return new MyBean();
+    }
+
+}
+```
+属性：
+* name：此bean的名称，如果未指定，那么bean的名称是带注解方法的名称。
+* initMethod：传入类中的一个方法名，在bean实例化的时候调用这个方法。
+* destroyMethod：传入方法名，在bean被销毁的时候调用这个方法。
 
 ## @Date注解
 @Date注解的主要作用就是使代码更简洁，使用这个注解可以省去代码中大量的get(), set(), toString()方法。
