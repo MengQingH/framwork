@@ -42,8 +42,8 @@ public class AppConfig {
 * initMethod：传入类中的一个方法名，在bean实例化的时候调用这个方法。
 * destroyMethod：传入方法名，在bean被销毁的时候调用这个方法。
 
-## @Date注解
-@Date注解的主要作用就是使代码更简洁，使用这个注解可以省去代码中大量的get(), set(), toString()方法。
+## @Data注解
+@Data注解的主要作用就是使代码更简洁，使用这个注解可以省去代码中大量的get(), set(), toString()方法。
 * 引入lombok，lombok是一个工具类库，可以用简单的注解形式简化代码
     ```xml
     <dependency>
@@ -104,3 +104,6 @@ public class AppConfig {
 
 ## @GetMapping、@PostMapping、@PutMapping、@DeleteMapping、@PatchMapping
 设置相应HTTP请求方式的映射。以@GetMapping为例，该注解为@ReuqestMapping(method=RequestMethod.GET)的缩写，请求方式和uri都对应的时候，才能使用该映射。
+
+## @JsonIgnoreProperties(ignoreUnknown = true)
+添加在实体类上，json字符串转换为实体类时，如果json中有类中不包含的属性，就忽略这些属性。
