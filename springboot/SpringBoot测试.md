@@ -13,34 +13,30 @@
     <version>4.12</version>
 </dependency>
 ```
-2. 在test/java/com/mqh/demo目录下创建测试类，在测试类的类头部添加：**@RunWith(SpringRunner.class)（需要在pom文件中导入junit包）**和**@SpringBootTest**注解，在测试方法的顶端添加@Test注解，最后点击方法上的run运行。如果需要对mapper或者service类中的内容进行测试，可以在类中创建对象并使用@Autowired注解，在方法中使用该对象。
+2. 在test目录下创建测试类，在测试类的类头部添加：**@RunWith(SpringRunner.class)**和 **@SpringBootTest**注解，在测试方法的顶端添加@Test注解。如果需要对mapper或者service类中的内容进行测试，可以在类中创建对象并使用@Autowired注解，在方法中使用该对象。
 ```java
+@RunWith(SpringRunner.class)
 @SpringBootTest
 public class TestDemo {
 
     @Autowired
     private TestMapper testMapper;
 
-    @Test
-    public void demo() {
-        User user = testMapper.selUserById(1);
-        System.out.println(user);
-    }
-
-}
-```
-
-3. 如果要**对Controller中的内容进行测试**，springboot也引入了**MockMvc**支持了对Controller层的测试。
-```java
-@SpringBootTest
-public class ControllerTestDemo {
-
-    private MockMvc mockMvc;
-
     @BeforeEach     //该注解表示每次执行方法前都执行这个方法。
     public void setUp() {
         //使用构造器模式创建MockMvc对象，传入要测试的Controller对象
         mockMvc = MockMvcBuilders.standaloneSetup(new TestController()).build();
+    }
+
+
+    @Test
+    // 表示方法使用事务
+    @Transactional
+    // 方法执行后是否回滚
+    @Rollback(false)
+    public void demo() {
+        User user = testMapper.selUserById(1);
+        System.out.println(user);
     }
 
     @Test
@@ -53,8 +49,22 @@ public class ControllerTestDemo {
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
     }
+
 }
 ```
+相关注解含义(Junit4)：
+* @BeforeClass – 表示在类中的任意public static void方法执行之前执行
+* @AfterClass – 表示在类中的任意public static void方法执行之后执行
+* @Before – 表示在任意使用@Test注解标注的public void方法执行之前执行
+* @After – 表示在任意使用@Test注解标注的public void方法执行之后执行
+Junit5注解：
+* @BeforeAll  @BeforeClass注释的替代。
+* @AfterAll  @AfterClass注释的替代。
+* @BeforEach  @Before注释的替代。
+* @AfterEach  @After注释的替代。
+
+
+3. 使用MockMvc来测试接口请求：
 代码解析：
 1. **perform()**：**执行一个RequestBuilder请求**，自动处理SpringMVC的流程并交给相应的控制器处理。
 2. **get()**：**声明一个发送get请求的方法**，**可以链式调用，设置请求的内容**。源码如下，get方法是MockMvcRequestBuilders的一个静态方法，可以直接调用，返回一个MockHttpServletRequestBuilder对象。另外也有post、delete等其他请求。MockMvcRequestBuilders类是MockHttpServletRequestBuilder类的一个构建器类，类中中可以根据需要的不同创建不同类型的RequestBuilder对象。

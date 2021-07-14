@@ -1,13 +1,20 @@
+<!--
+ * @Author: QingHui Meng
+ * @Date: 2020-10-12 16:58:08
+-->
 Stream 是一个 **来自数据源** 的 **元素队列** 并 **支持聚合操作**。
 * 元素是一系列元素的集合，可以对这些元素进行不同的操作。
 * 数据流的来源，可以是集合，数组，IO等。
 * Pipelining: 中间操作都会返回流对象本身。 这样多个操作可以串联成一个管道， 如同流式风格（fluent style）。 这样做可以对操作进行优化， 比如延迟执行(laziness)和短路( short-circuiting)。
-* 内部迭代： 以前对集合遍历都是通过Iterator或者For-Each的方式, 显式的在集合外部进行迭代， 这叫做外部迭代。 Stream提供了内部迭代的方式， 通过访问者模式(Visitor)实现。
+* 内部迭代： 以前对集合遍历都是通过Iterator或者For-Each的方式, 显式的在集合外部进行迭代，这叫做外部迭代。 Stream提供了内部迭代的方式， 通过访问者模式(Visitor)实现。
 
 ## 创建流
-* 通过集合的stream()方法或者parallelStream()，比如Arrays.asList(1,2,3).stream()。
-* 通过Arrays.stream(Object[])方法, 比如Arrays.stream(new int[]{1,2,3})。
-* 使用流的静态方法，比如Stream.of(Object[]), IntStream.range(int, int) 或者 Stream.iterate(Object, UnaryOperator)，如Stream.iterate(0, n -> n * 2)，或者generate(Supplier<T> s)如Stream.generate(Math::random)。
+* 通过集合的**stream()方法**或者parallelStream()，比如Arrays.asList(1,2,3).stream()。
+* 通过**Arrays.stream(Object[])方法**, 比如Arrays.stream(new int[]{1,2,3})。
+    * 如果使用这种方法传入基本数据类型int, double, long，那么创建的就是对应的流IntStream，DoubleStream，LongStream，可以使用boxed()方法转换为普通的流Stream<Integer>。
+* 使用流的静态方法，比如**Stream.of(object)**, **IntStream.range(int, int)** 或者 **Stream.iterate(Object, UnaryOperator)**，如Stream.iterate(0, n -> n * 2)，或者**generate(Supplier<T> s)**如Stream.generate(Math::random)。
+    * Stream.of(object)：创建的是object类型的流，如Stream.of(new int[]{1,2})，那么创建的就是int []类型的流
+* 可以使用StreamSupport工具类，用Spliterator来创建流。如**StreamSupport.stream(Spliterator<T> spliterator, boolean parallel)**来创建一个stream<T>类型的流。集合类的stream()方法来创建流都是用的此方法。
 
 ## 流操作
 这些方法的返回值为操作后的流，可以连续调用
@@ -56,3 +63,56 @@ Stream 是一个 **来自数据源** 的 **元素队列** 并 **支持聚合操�
     * <U> U reduce(U identity,
                  BiFunction<U, ? super T, U> accumulator,
                  BinaryOperator<U> combiner)
+
+## Collectors
+### toMap()
+把流转为map，需要执行key和value
+1. 指定key-value，value是对象中的某个值 ``Collectors.toMap(User::getId, User::getName);``
+2. value是对象本身 
+    ```java
+    Collectors.toMap(User::getId, User->User);
+    Collectors.toMap(User::getId, Function.identity());
+    ```
+3. value是对象本身，key冲突的解决办法
+    ```java
+    // 如果key产生冲突，用第二个key覆盖第一个
+    Collectors.toMap(User::getId, Function.identity(),(key1,key2)->key2)
+    ```
+
+### partitioningBy()
+将Stream中的元素依据某个二值逻辑（满足条件、不满足条件）分成互补的两部分，比如男女性别，成绩是否及格等
+```java
+Map<Boolean, List<Student>> passingFailing = students
+                    .stream().collect(Collectors.partitioningBy(s -> s.getGrade() >= PASS_THRESHOLD));
+```
+
+### groupingBy()
+1. 按照某个属性对数据进行分组，属性相同的元素会被分到map中的同一个key上。
+    ```java
+    Map<Department, List<Employee>> byDept = employees.stream()
+        .collect(Collectors.groupingBy(Employee::getDepartment));
+    ```
+2. 分组之后进行某种运算，如求和，计数，平均值，类型转换等。将元素分组的收集器叫做上游收集器，之后执行其他运算的收集器叫做下游收集器(downstream Collector)。
+    ```java
+    // 使用下游收集器统计部门人数
+    Map<Department, Integer> totalByDept = employees.stream()
+                    .collect(Collectors.groupingBy(Employee::getDepartment,
+                                                   Collectors.counting()));// 下游收集器
+    ```
+3. 下游收集器还可以包含更下游的收集器
+    ```java
+    // 按照部门对员工分布组，并只保留员工的名字
+    Map<Department, List<String>> byDept = employees.stream()
+                    .collect(Collectors.groupingBy(Employee::getDepartment,
+                            Collectors.mapping(Employee::getName,// 下游收集器
+                                    Collectors.toList())));// 更下游的收集器
+    ```
+
+### joining()
+字符串拼接。
+```java
+Stream<String> stream = Stream.of("I", "love", "you");
+String joined1 = stream.collect(Collectors.joining());// "Iloveyou"
+String joined2 = stream.collect(Collectors.joining(","));// "I,love,you"
+String joined3 = stream.collect(Collectors.joining(",", "{", "}"));// "{I,love,you}"
+```

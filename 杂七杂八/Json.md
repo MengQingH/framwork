@@ -1,3 +1,20 @@
+## 常用的json包：
+* com.alibaba.fastjson: 
+    * JSONObject: 可以直接进行put get操作，可以使用getXXX(key)取出指定类型的值。
+    * JSONArray:可以直接get，可以使用getXXX(index)取出指定类型的值， JSONArray可以使用stream；可以直接进行add set操作，前者直接添加，后者添加并返回
+
+* cn.hutool.json:
+    * JSONObject: 可以直接进行put get操作，可以使用getXXX(key)取出指定类型的值。
+    * JSONArray: 可以直接get，可以使用getXXX(index)取出指定类型的值，JSONArray可以使用stream；添加方法区别：
+        * put(index, Obj)：在index上添加Obj，如果有index上有元素，则插入，之前的元素继续向后排；如果大于最大长度，那么之前的值设置为null。
+        * add(index, Obj): 功能和put相同，区别是put返回当前的JSONArray，add返回void。
+        * set(index, Obj)：覆盖index位置的值，如果index超出长度，则报错。
+
+* com.fasterxml.jackson:
+    * JsonNode ArrayNode: 只读，无法写入。如果要写入需要转为ObjectNode。
+    * ObjectNode：可以写入，无法使用stream
+
+
 ## JSONUtil
 JSONUtil是hutool包下的工具类。
 ```java

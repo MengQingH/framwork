@@ -1,3 +1,7 @@
+<!--
+ * @Author: QingHui Meng
+ * @Date: 2020-07-24 10:31:12
+-->
 **工作区**：创建了git仓库的目录。
 
 **版本库(Repository)**：工作区的隐藏目录.git文件夹为git的版本库，Git的版本库里存了很多东西，其中最重要的就是称为**stage（或者叫index）的暂存区**，还有Git为我们自动创建的第一个**分支master**，以及**指向master的一个指针叫HEAD**。
@@ -72,6 +76,14 @@ cd:
 
 ## idea中rebase
 rebase可以把多次提交合并到一次commit中。
-1. 在要合并的分支中复制最先提交的commit的version number。
+1. 在要合并的分支中复制最先提交的commit的version number。(要选择user为all)
 2. vcs-git-rebase，勾选Interactive，onto中粘贴1中的version number。点击rebase
 3. 把第一个选择为pick，后面的选择为squash，点击start rebasing。
+
+## idea中的changeList
+changeList可以对当前分支的修改进行分类。
+1. 可以创建多个changelist，但是只有一个处于**active状态**，**当前的修改会保存在active的changelist中**。相当于在一个分支下进行多个功能的修改，避免了来回切换分支的麻烦。
+
+2. 和git stash不同的是所有changelist的修改都会在文件中显示；changelist也有和stash相同的功能，右键changelist，选择**shelve changes**，可以把修改保存。在shelf标签下面可以把修改取出。
+
+3. 进行commit时，可以自由选择，可以选择不同changelist下的不同文件进行commit。
