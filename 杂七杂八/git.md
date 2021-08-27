@@ -86,4 +86,6 @@ changeList可以对当前分支的修改进行分类。
 
 2. 和git stash不同的是所有changelist的修改都会在文件中显示；changelist也有和stash相同的功能，右键changelist，选择**shelve changes**，可以把修改保存。在shelf标签下面可以把修改取出。
 
-3. 进行commit时，可以自由选择，可以选择不同changelist下的不同文件进行commit。
+3. changelist下的改动可以移动到不同的changelist中。
+
+4. 进行commit时，可以自由选择，可以选择不同changelist下的不同文件进行commit。

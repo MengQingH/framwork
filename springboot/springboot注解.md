@@ -107,3 +107,24 @@ public class AppConfig {
 
 ## @JsonIgnoreProperties(ignoreUnknown = true)
 添加在实体类上，json字符串转换为实体类时，如果json中有类中不包含的属性，就忽略这些属性。
+
+## @Transactional
+声明式事务，建立在AOP之上，本质上是对方法前后进行拦截，然后在目标方法开始之前创建或者加入一个事务，执行完方法之后提交或者回滚事务。
+
+自动提交：默认情况下，数据库处于自动提交模式，每一条语句处于一个单独的事务中，这条语句执行完毕时，成功则隐式的提交事务，失败则隐式的回滚事务。Spring会默认关闭这个特性。
+
+* value：String，可选，指定使用的事务管理器。
+* propagation：enum:Propagation，可选，事务传播行为设置。
+* isolation：enum:Isolation，可选，事务隔离级别设置。
+* readOnly：boolean，读写或者只读事务，默认读写
+* timeout：int，事务超时时间设置。
+* rollbackFor：class对象数组，必须继承Throwable，导致事务回滚的异常类数组。
+* rollbackForClassName：类名数组，必须继承自Throwable，导致事务回滚的异常类名字数组。
+* noRollbackFor：Class对象数组，必须继承自Throwable，不会导致事务回滚的异常类数组。
+
+用法：
+1. @Transactional注解可以作用于接口、接口方法、类及类方法上，但是不建议使用在接口上，因为只有在基于接口的代理时它才会生效。另外，@Transactional注解应该只被应用到public方法上，在非public方法上使用会被忽略，也不会抛出异常。
+
+实现机制：在应用系统调用声明了 @Transactional 的目标方法时，Spring Framework 默认使用 AOP 代理，在代码运行时生成一个代理对象，根据 @Transactional 的属性配置信息，这个代理对象决定该声明 @Transactional 的目标方法是否由拦截器 TransactionInterceptor 来使用拦截，在 TransactionInterceptor 拦截时，会在目标方法开始执行之前创建并加入事务，并执行目标方法的逻辑, 最后根据执行情况是否出现异常，利用抽象事务管理器 AbstractPlatformTransactionManager 操作数据源 DataSource 提交或回滚事务。
+
+Spring AOP 代理有 CglibAopProxy 和 JdkDynamicAopProxy 两种，以 CglibAopProxy 为例，对于 CglibAopProxy，需要调用其内部类的 DynamicAdvisedInterceptor 的 intercept 方法。对于 JdkDynamicAopProxy，需要调用其 invoke 方法。
