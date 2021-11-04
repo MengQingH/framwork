@@ -8,6 +8,19 @@ Stream 是一个 **来自数据源** 的 **元素队列** 并 **支持聚合操�
 * Pipelining: 中间操作都会返回流对象本身。 这样多个操作可以串联成一个管道， 如同流式风格（fluent style）。 这样做可以对操作进行优化， 比如延迟执行(laziness)和短路( short-circuiting)。
 * 内部迭代： 以前对集合遍历都是通过Iterator或者For-Each的方式, 显式的在集合外部进行迭代，这叫做外部迭代。 Stream提供了内部迭代的方式， 通过访问者模式(Visitor)实现。
 
+## 特点：
+* 只能遍历一次：数据流的从一头获取数据源，在流水线上依次对元素进行操作，当元素通过流水线，便无法再对其进行操作，可以重新在数据源获取一个新的数据流进行操作；
+
+* 采用内部迭代：对Collection进行处理，一般会使用 Iterator 遍历器的遍历方式，这是一种外部迭代；
+而对于处理Stream，只要申明处理方式，处理过程由流对象自行完成，这是一种内部迭代，对于大量数据的迭代处理中，内部迭代比外部迭代要更加高效；
+
+## 相比iterator的优点
+* 无存储：流并不存储值；流的元素源自数据源（可能是某个数据结构、生成函数或I/O通道等等），通过一系列计算步骤得到；
+* 函数式风格：对流的操作会产生一个结果，但流的数据源不会被修改；
+* 惰性求值：多数流操作（包括过滤、映射、排序以及去重）都可以以惰性方式实现。这使得我们可以用一遍遍历完成整个流水线操作，并可以用短路操作提供更高效的实现；
+* 无需上界：不少问题都可以被表达为无限流（infinite stream）：用户不停地读取流直到满意的结果出现为止（比如说，枚举 完美数 这个操作可以被表达为在所有整数上进行过滤）；集合是有限的，但流可以表达为无线流；
+* 代码简练：对于一些collection的迭代处理操作，使用 stream 编写可以十分简洁，如果使用传统的 collection 迭代操作，代码可能十分啰嗦，可读性也会比较糟糕；
+
 ## 创建流
 * 通过集合的**stream()方法**或者parallelStream()，比如Arrays.asList(1,2,3).stream()。
 * 通过**Arrays.stream(Object[])方法**, 比如Arrays.stream(new int[]{1,2,3})。
@@ -115,4 +128,11 @@ Stream<String> stream = Stream.of("I", "love", "you");
 String joined1 = stream.collect(Collectors.joining());// "Iloveyou"
 String joined2 = stream.collect(Collectors.joining(","));// "I,love,you"
 String joined3 = stream.collect(Collectors.joining(",", "{", "}"));// "{I,love,you}"
+```
+
+### collectingAndThen(Collector<T, A, R> var0, Function<R, RR> var1)
+分组之后再进行其他操作，先collector，再function
+```java
+// 将servers joining 然后转成大写
+ servers.stream.collect(Collectors.collectingAndThen(Collectors.joining(","), String::toUpperCase));
 ```
