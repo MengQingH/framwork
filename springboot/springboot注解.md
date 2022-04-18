@@ -128,3 +128,12 @@ public class AppConfig {
 实现机制：在应用系统调用声明了 @Transactional 的目标方法时，Spring Framework 默认使用 AOP 代理，在代码运行时生成一个代理对象，根据 @Transactional 的属性配置信息，这个代理对象决定该声明 @Transactional 的目标方法是否由拦截器 TransactionInterceptor 来使用拦截，在 TransactionInterceptor 拦截时，会在目标方法开始执行之前创建并加入事务，并执行目标方法的逻辑, 最后根据执行情况是否出现异常，利用抽象事务管理器 AbstractPlatformTransactionManager 操作数据源 DataSource 提交或回滚事务。
 
 Spring AOP 代理有 CglibAopProxy 和 JdkDynamicAopProxy 两种，以 CglibAopProxy 为例，对于 CglibAopProxy，需要调用其内部类的 DynamicAdvisedInterceptor 的 intercept 方法。对于 JdkDynamicAopProxy，需要调用其 invoke 方法。
+
+
+## @Async注解
+使用@Async注解标记的方法，都会异步执行。使用细节：
+* 如果标记了接口或者类，那么该类中所有的方法都会异步执行。
+* 使用该注解方法的类对象应该是Spring容器管理的bean对象。
+* 可以使用在接口或者接口方法上，但是只有使用的是**JDK动态代理**才会有效，CGLIB会失效，因此最好写在实现类的方法上。
+* 需要使用@EnableAsync来开启异步注解的支持。
+* 如果需要得到异步调用的返回值，需要把返回值用Futrue变量包装起来。
